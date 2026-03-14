@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/theme/app_theme.dart';
 import '../../main_navigation.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool _obscurePassword = true;
 
   @override
@@ -46,6 +49,31 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const MainNavigation()),
     );
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      final account = await _googleSignIn.signIn();
+
+      if (account == null || !mounted) {
+        return;
+      }
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const MainNavigation()),
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Google ile giris su an tamamlanamadi.'),
+          backgroundColor: AppColors.warning,
+        ),
+      );
+    }
   }
 
   @override
@@ -110,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          'Hesabına giriş yap ve günlük takibini sürdür.',
+                          'Hesabina giris yap ve gunluk takibini surdur.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
@@ -137,10 +165,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'E-posta alanı boş bırakılamaz.';
+                              return 'E-posta alani bos birakilamaz.';
                             }
                             if (!value.contains('@') || !value.contains('.')) {
-                              return 'Geçerli bir e-posta adresi gir.';
+                              return 'Gecerli bir e-posta adresi gir.';
                             }
                             return null;
                           },
@@ -150,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Şifre',
+                            labelText: 'Sifre',
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
                               onPressed: () {
@@ -167,10 +195,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Şifre alanı boş bırakılamaz.';
+                              return 'Sifre alani bos birakilamaz.';
                             }
                             if (value.length < 6) {
-                              return 'Şifre en az 6 karakter olmalı.';
+                              return 'Sifre en az 6 karakter olmali.';
                             }
                             return null;
                           },
@@ -183,12 +211,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                    'Şifre sıfırlama yakında eklenecek.',
+                                    'Sifre sifirlama yakinda eklenecek.',
                                   ),
                                 ),
                               );
                             },
-                            child: const Text('Şifremi unuttum'),
+                            child: const Text('Sifremi unuttum'),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -196,17 +224,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 52,
                           child: ElevatedButton(
                             onPressed: _login,
-                            child: const Text('Giriş Yap'),
+                            child: const Text('Giris Yap'),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _signInWithGoogle,
+                            icon: const Icon(Icons.account_circle_outlined),
+                            label: const Text('Gmail ile Giris Yap'),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.info),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 14),
                         OutlinedButton(
                           onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Kayıt olma özelliği yakında eklenecek.',
-                                ),
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterScreen(),
                               ),
                             );
                           },
@@ -218,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: const Text(
-                            'Hesap Oluştur',
+                            'Hesap Olustur',
                             style: TextStyle(color: AppColors.primary),
                           ),
                         ),
