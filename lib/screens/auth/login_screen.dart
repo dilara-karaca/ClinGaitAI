@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (username != _defaultUsername || password != _defaultPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Kullanici adi veya sifre hatali.'),
+          content: Text('Kullanıcı adı veya şifre hatalı.'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Google ile giris su an tamamlanamadi.'),
+          content: Text('Google ile giriş şu an tamamlanamadı.'),
           backgroundColor: AppColors.warning,
         ),
       );
@@ -119,10 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: AppColors.primary.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Icon(
-                              Icons.health_and_safety_rounded,
-                              color: AppColors.primary,
-                              size: 38,
+                            clipBehavior: Clip.antiAlias,
+                            child: Image.asset(
+                              'assets/logo.png',
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
@@ -138,19 +138,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          'Hesabina giris yap ve gunluk takibini surdur.',
+                          'Hesabınıza giriş yapın ve günlük takibinizi sağlayın.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Demo: $_defaultUsername / $_defaultPassword',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
                             color: AppColors.textSecondary,
                           ),
                         ),
@@ -159,16 +150,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
-                            labelText: 'Kullanici adi (E-posta)',
-                            hintText: 'ornek@mail.com',
+                            labelText: 'E-posta',
+                            hintText: 'Örnek: ornek@mail.com',
                             prefixIcon: Icon(Icons.mail_outline),
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'E-posta alani bos birakilamaz.';
+                              return 'E-posta alanı boş bırakılamaz.';
                             }
                             if (!value.contains('@') || !value.contains('.')) {
-                              return 'Gecerli bir e-posta adresi gir.';
+                              return 'Geçerli bir e-posta adresi gir.';
                             }
                             return null;
                           },
@@ -178,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Sifre',
+                            labelText: 'Şifre',
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
                               onPressed: () {
@@ -195,10 +186,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Sifre alani bos birakilamaz.';
+                              return 'Şifre alanı boş bırakılamaz.';
                             }
                             if (value.length < 6) {
-                              return 'Sifre en az 6 karakter olmali.';
+                              return 'Şifre en az 6 karakter olmalı.';
                             }
                             return null;
                           },
@@ -211,12 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                    'Sifre sifirlama yakinda eklenecek.',
+                                    'Şifre sıfırlama yakında eklenecek.',
                                   ),
                                 ),
                               );
                             },
-                            child: const Text('Sifremi unuttum'),
+                            child: const Text('Şifremi unuttum'),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -224,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 52,
                           child: ElevatedButton(
                             onPressed: _login,
-                            child: const Text('Giris Yap'),
+                            child: const Text('Giriş Yap'),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -232,8 +223,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 52,
                           child: OutlinedButton.icon(
                             onPressed: _signInWithGoogle,
-                            icon: const Icon(Icons.account_circle_outlined),
-                            label: const Text('Gmail ile Giris Yap'),
+                            icon: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: const Color(0xFFDADCE0),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'G',
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF4285F4),
+                                    height: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            label: const Text('Google ile Giriş Yap'),
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: AppColors.info),
                               shape: RoundedRectangleBorder(
@@ -242,25 +255,44 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 14),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const RegisterScreen(),
+                        const SizedBox(height: 16),
+                        Center(
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              const Text(
+                                'Hesabınız yok mu? ',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            side: const BorderSide(color: AppColors.primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Hesap Olustur',
-                            style: TextStyle(color: AppColors.primary),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => const RegisterScreen(),
+                                    ),
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(6),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                    vertical: 2,
+                                  ),
+                                  child: Text(
+                                    'Kayıt olun',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

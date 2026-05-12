@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
+import '../profile/profile_screen.dart';
+import '../settings/settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,89 +20,145 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
-  // Takvimde seçili gün (bugün)
-  DateTime _selectedDate = DateTime(2026, 3, 10);
-  final DateTime _today = DateTime(2026, 3, 10);
+  late final List<_MedItem> _medications = [
+    _MedItem(
+      'Vitamin D3',
+      '1000 IU',
+      'Sabah',
+      Icons.wb_sunny,
+      AppColors.chartOrange,
+      true,
+    ),
+    _MedItem(
+      'Kalsiyum',
+      '500 mg',
+      'Öğle',
+      Icons.medication_outlined,
+      AppColors.chartBlue,
+      false,
+    ),
+    _MedItem(
+      'Omega-3',
+      '1000 mg',
+      'Akşam',
+      Icons.water_drop_outlined,
+      AppColors.chartGreen,
+      false,
+    ),
+  ];
+
+  void _handleProfileMenuAction(_ProfileMenuAction action) {
+    switch (action) {
+      case _ProfileMenuAction.profile:
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const ProfileScreen()));
+        break;
+      case _ProfileMenuAction.settings:
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            _buildGreetingSection(context),
-            const SizedBox(height: 20),
-            // Streak kartı (tam genişlik)
-            _buildStreakCard(),
-            const SizedBox(height: 20),
-            // Takvim
-            _buildCalendarSection(),
-            const SizedBox(height: 20),
-            // Seçili güne ait İlaçlar
-            _buildSectionTitle('İlaçlarım', Icons.medication_outlined),
-            const SizedBox(height: 12),
-            _buildMedicationsForDay(),
-            const SizedBox(height: 20),
-            // Seçili güne ait Hareketlerim/Egzersizler
-            _buildSectionTitle('Egzersizlerim', Icons.directions_run),
-            const SizedBox(height: 12),
-            _buildExercisesForDay(),
-            const SizedBox(height: 20),
-            // Randevular
-            _buildSectionTitle('Randevularım', Icons.calendar_month),
-            const SizedBox(height: 12),
-            _buildAppointments(),
-            const SizedBox(height: 100),
-          ],
-        ),
-      ),
-    );
-  }
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: MediaQuery.of(context).padding.top + 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Merhaba Dilara',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Günün nasıl geçiyor?',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  _buildConnectionIndicator(),
+                  const SizedBox(width: 10),
+                  _buildNotificationBadge(context),
+                  const SizedBox(width: 12),
+                  PopupMenuButton<_ProfileMenuAction>(
+                    onSelected: (action) => _handleProfileMenuAction(action),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    offset: const Offset(0, 50),
+                    itemBuilder:
+                        (context) => const [
+                          PopupMenuItem(
+                            value: _ProfileMenuAction.profile,
+                            child: Row(
+                              children: [
+                                Icon(Icons.person_outline, size: 20),
+                                SizedBox(width: 10),
+                                Text('Profil'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: _ProfileMenuAction.settings,
+                            child: Row(
+                              children: [
+                                Icon(Icons.settings_outlined, size: 20),
+                                SizedBox(width: 10),
+                                Text('Ayarlar'),
+                              ],
+                            ),
+                          ),
+                        ],
+                    child: CircleAvatar(
+                      radius: 24,
+                      backgroundColor: AppColors.primaryLight.withOpacity(0.2),
+                      child: const Icon(
+                        Icons.person,
+                        color: AppColors.primary,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
 
-  // ─── KARŞILAMA ────────────────────────────────────
-  Widget _buildGreetingSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Merhaba 👋',
-              style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Ayşe',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            _buildConnectionIndicator(),
-            const SizedBox(width: 10),
-            _buildNotificationBadge(context),
-            const SizedBox(width: 12),
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: AppColors.primaryLight.withValues(alpha: 0.2),
-              child: const Icon(
-                Icons.person,
-                color: AppColors.primary,
-                size: 28,
-              ),
-            ),
-          ],
-        ),
-      ],
+          _buildStreakCard(),
+          const SizedBox(height: 16),
+
+          _buildSectionTitle('İlaçlar', Icons.medication_outlined),
+          const SizedBox(height: 12),
+          _buildMedicationsForDay(),
+          const SizedBox(height: 16),
+
+          _buildSectionTitle('Randevular', Icons.calendar_today),
+          const SizedBox(height: 12),
+          _buildAppointments(),
+          const SizedBox(height: 24),
+        ],
+      ),
     );
   }
 
@@ -116,7 +174,7 @@ class _HomeBodyState extends State<HomeBody> {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Colors.black.withOpacity(0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),
@@ -129,8 +187,8 @@ class _HomeBodyState extends State<HomeBody> {
             ),
           ),
           Positioned(
-            right: 8,
-            top: 8,
+            right: 6,
+            top: 6,
             child: Container(
               width: 10,
               height: 10,
@@ -213,7 +271,7 @@ class _HomeBodyState extends State<HomeBody> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
+              color: AppColors.primary.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: AppColors.primary, size: 20),
@@ -247,10 +305,8 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 
-  // ─── BAĞLANTI GÖSTERGESİ ─────────────────────────
   Widget _buildConnectionIndicator() {
-    // ignore: dead_code
-    final bool isConnected = true;
+    const bool isConnected = true;
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -259,7 +315,7 @@ class _HomeBodyState extends State<HomeBody> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -273,7 +329,6 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 
-  // ─── STREAK ───────────────────────────────────────
   Widget _buildStreakCard() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -286,7 +341,7 @@ class _HomeBodyState extends State<HomeBody> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.3),
+            color: AppColors.primary.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -296,58 +351,52 @@ class _HomeBodyState extends State<HomeBody> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.local_fire_department_rounded,
+                  color: AppColors.accent,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(
-                      Icons.local_fire_department_rounded,
-                      color: AppColors.accent,
-                      size: 28,
+                  const Text(
+                    '12 Günlük Seri',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '12 Günlük Seri',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Mükemmel gidiyorsun! 🔥',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'Mükemmel gidiyorsun! 🔥',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.8),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 20),
-          // Haftalık ilerleme
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(7, (i) {
               final isCompleted = i < 5;
               final isToday = i == 5;
-              final dayLabels = [
+              const dayLabels = [
                 'Pzt',
                 'Sal',
                 'Çar',
@@ -367,8 +416,8 @@ class _HomeBodyState extends State<HomeBody> {
                           isCompleted
                               ? AppColors.accent
                               : isToday
-                              ? Colors.white.withValues(alpha: 0.3)
-                              : Colors.white.withValues(alpha: 0.1),
+                              ? Colors.white.withOpacity(0.3)
+                              : Colors.white.withOpacity(0.1),
                       shape: BoxShape.circle,
                       border:
                           isToday
@@ -391,7 +440,7 @@ class _HomeBodyState extends State<HomeBody> {
                       color:
                           isToday
                               ? Colors.white
-                              : Colors.white.withValues(alpha: 0.6),
+                              : Colors.white.withOpacity(0.6),
                       fontSize: 12,
                       fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
                     ),
@@ -405,197 +454,6 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 
-  // ─── TAKVİM ───────────────────────────────────────
-  Widget _buildCalendarSection() {
-    // Haftanın günlerini göster (bu hafta)
-    final weekStart = _today.subtract(Duration(days: _today.weekday - 1));
-    final days = List.generate(7, (i) => weekStart.add(Duration(days: i)));
-    final dayNames = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          // Ay başlığı
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Mart 2026',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: const Icon(
-                      Icons.chevron_left,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {},
-                    child: const Icon(
-                      Icons.chevron_right,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Gün satırı
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(7, (i) {
-              final day = days[i];
-              final isSelected =
-                  day.day == _selectedDate.day &&
-                  day.month == _selectedDate.month;
-              final isToday =
-                  day.day == _today.day && day.month == _today.month;
-
-              // Günlere göre ilaç/egzersiz işaretleri
-              final hasActivity = day.day <= 10; // demo: 10'a kadar aktif
-
-              return GestureDetector(
-                onTap: () => setState(() => _selectedDate = day),
-                child: Column(
-                  children: [
-                    Text(
-                      dayNames[i],
-                      style: TextStyle(
-                        fontSize: 12,
-                        color:
-                            isSelected
-                                ? AppColors.primary
-                                : AppColors.textLight,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.normal,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected
-                                ? AppColors.primary
-                                : isToday
-                                ? AppColors.primary.withValues(alpha: 0.1)
-                                : Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${day.day}',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight:
-                                isSelected || isToday
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                            color:
-                                isSelected
-                                    ? Colors.white
-                                    : isToday
-                                    ? AppColors.primary
-                                    : AppColors.textPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    // Alt noktalar (ilaç: mavi, egzersiz: yeşil)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (hasActivity)
-                          Container(
-                            width: 5,
-                            height: 5,
-                            margin: const EdgeInsets.symmetric(horizontal: 1),
-                            decoration: const BoxDecoration(
-                              color: AppColors.chartBlue,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        if (hasActivity)
-                          Container(
-                            width: 5,
-                            height: 5,
-                            margin: const EdgeInsets.symmetric(horizontal: 1),
-                            decoration: const BoxDecoration(
-                              color: AppColors.chartGreen,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 12),
-          // Lejant
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: AppColors.chartBlue,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 6),
-              const Text(
-                'İlaç',
-                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
-              ),
-              const SizedBox(width: 16),
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: AppColors.chartGreen,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 6),
-              const Text(
-                'Egzersiz',
-                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ─── SEKSİYON BAŞLIĞI ─────────────────────────────
   Widget _buildSectionTitle(String title, IconData icon) {
     return Row(
       children: [
@@ -613,395 +471,404 @@ class _HomeBodyState extends State<HomeBody> {
     );
   }
 
-  // ─── İLAÇLAR ─────────────────────────────────────
   Widget _buildMedicationsForDay() {
-    final medications = [
-      _MedItem(
-        'Vitamin D3',
-        '1000 IU',
-        'Sabah',
-        Icons.wb_sunny,
-        AppColors.chartOrange,
-        true,
-      ),
-      _MedItem(
-        'Kalsiyum',
-        '500 mg',
-        'Öğle',
-        Icons.medication_outlined,
-        AppColors.chartBlue,
-        false,
-      ),
-      _MedItem(
-        'Omega-3',
-        '1000 mg',
-        'Akşam',
-        Icons.water_drop_outlined,
-        AppColors.chartGreen,
-        false,
-      ),
-    ];
-
-    return Column(
-      children:
-          medications.map((m) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: m.color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(m.icon, color: m.color, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          m.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          '${m.dosage} • ${m.time}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color:
-                          m.isTaken
-                              ? AppColors.success.withValues(alpha: 0.12)
-                              : AppColors.background,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      m.isTaken ? Icons.check_circle : Icons.circle_outlined,
-                      color:
-                          m.isTaken ? AppColors.success : AppColors.textLight,
-                      size: 20,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-    );
+    return Column(children: _medications.map(_buildMedicationCard).toList());
   }
 
-  // ─── HAREKETLERİM / EGZERSİZLER ──────────────────
-  Widget _buildExercisesForDay() {
-    final exercises = [
-      _ExItem(
-        'Ayak Bileği Rotasyonu',
-        '3 set x 15 tekrar',
-        '10 dk',
-        Icons.rotate_right,
-        AppColors.chartBlue,
-        true,
+  Widget _buildMedicationCard(_MedItem medication) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      _ExItem(
-        'Parmak Ucu Yürüyüşü',
-        '2 set x 20 adım',
-        '5 dk',
-        Icons.directions_walk,
-        AppColors.chartGreen,
-        true,
-      ),
-      _ExItem(
-        'Topuk Kaldırma',
-        '3 set x 12 tekrar',
-        '8 dk',
-        Icons.height,
-        AppColors.chartOrange,
-        false,
-      ),
-      _ExItem(
-        'Denge Egzersizi',
-        '2 set x 30 sn',
-        '10 dk',
-        Icons.accessibility_new,
-        AppColors.chartPurple,
-        false,
-      ),
-    ];
-
-    return Column(
-      children:
-          exercises.map((e) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () => _showMedicationDetails(medication),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: medication.color.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(medication.icon, color: medication.color, size: 22),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: e.color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(e.icon, color: e.color, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          e.title,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                            decoration:
-                                e.isDone ? TextDecoration.lineThrough : null,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          '${e.sets} • ${e.duration}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color:
-                          e.isDone
-                              ? AppColors.success.withValues(alpha: 0.12)
-                              : AppColors.background,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      e.isDone ? Icons.check_circle : Icons.circle_outlined,
-                      color: e.isDone ? AppColors.success : AppColors.textLight,
-                      size: 20,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-    );
-  }
-
-  // ─── RANDEVULAR ───────────────────────────────────
-  Widget _buildAppointments() {
-    final appointments = [
-      _AppointmentData(
-        doctor: 'Dr. Mehmet Yılmaz',
-        specialty: 'Çocuk Ortopedi',
-        date: '15 Mart 2026',
-        time: '14:00',
-        isUpcoming: true,
-      ),
-      _AppointmentData(
-        doctor: 'Fzt. Elif Demir',
-        specialty: 'Fizyoterapi',
-        date: '20 Mart 2026',
-        time: '10:30',
-        isUpcoming: true,
-      ),
-      _AppointmentData(
-        doctor: 'Dr. Mehmet Yılmaz',
-        specialty: 'Kontrol',
-        date: '5 Mart 2026',
-        time: '11:00',
-        isUpcoming: false,
-      ),
-    ];
-
-    return Column(
-      children:
-          appointments.map((a) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(16),
-                border:
-                    a.isUpcoming
-                        ? Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.2),
-                          width: 1,
-                        )
-                        : null,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // Tarih kutusu
-                  Container(
-                    width: 52,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color:
-                          a.isUpcoming
-                              ? AppColors.primary.withValues(alpha: 0.1)
-                              : AppColors.background,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          a.date.split(' ')[0],
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color:
-                                a.isUpcoming
-                                    ? AppColors.primary
-                                    : AppColors.textSecondary,
-                          ),
-                        ),
-                        Text(
-                          a.date.split(' ')[1],
-                          style: TextStyle(
-                            fontSize: 11,
-                            color:
-                                a.isUpcoming
-                                    ? AppColors.primary
-                                    : AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          a.doctor,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          a.specialty,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.access_time,
-                              size: 14,
-                              color: AppColors.textLight,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              a.time,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Durum badge'i
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          a.isUpcoming
-                              ? AppColors.primary.withValues(alpha: 0.1)
-                              : AppColors.success.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      a.isUpcoming ? 'Yaklaşan' : 'Tamamlandı',
-                      style: TextStyle(
-                        fontSize: 11,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      medication.name,
+                      style: const TextStyle(
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color:
-                            a.isUpcoming
-                                ? AppColors.primary
-                                : AppColors.success,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      '${medication.dosage} • ${medication.time}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => _showMedicationDetails(medication),
+                child: Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color:
+                        medication.isTaken
+                            ? AppColors.success.withOpacity(0.12)
+                            : AppColors.background,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    medication.isTaken
+                        ? Icons.check_circle
+                        : Icons.arrow_forward_ios,
+                    color:
+                        medication.isTaken
+                            ? AppColors.success
+                            : AppColors.textLight,
+                    size: medication.isTaken ? 20 : 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showMedicationDetails(_MedItem medication) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.12),
+                    blurRadius: 24,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.textLight.withOpacity(0.35),
+                        borderRadius: BorderRadius.circular(999),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  Text(
+                    medication.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${medication.dosage} • ${medication.time}',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDetailTile(
+                    'Durum',
+                    medication.isTaken ? 'Alındı' : 'Bekliyor',
+                  ),
+                  const SizedBox(height: 10),
+                  _buildDetailTile('Saat', medication.time),
+                  const SizedBox(height: 10),
+                  _buildDetailTile('Doz', medication.dosage),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          medication.isTaken = true;
+                        });
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Alındı Olarak İşaretle'),
+                    ),
+                  ),
                 ],
               ),
-            );
-          }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAppointments() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primary.withOpacity(0.14),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.event_note_outlined,
+                color: AppColors.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Yaklaşan Randevular',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildAppointmentDetailRow('Hekim', 'Dr. Ayşe Demir'),
+          const SizedBox(height: 10),
+          _buildAppointmentDetailRow('Klinik', 'Ortopedi'),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: ElevatedButton(
+              onPressed: _showAppointmentDetails,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Randevu Detayları',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAppointmentDetails() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.12),
+                    blurRadius: 24,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.textLight.withOpacity(0.35),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Randevu Detayları',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDetailTile('Hekim', 'Dr. Ayşe Demir'),
+                  const SizedBox(height: 10),
+                  _buildDetailTile('Klinik', 'Ortopedi'),
+                  const SizedBox(height: 10),
+                  _buildDetailTile('Tarih', '15 Mart 2026'),
+                  const SizedBox(height: 10),
+                  _buildDetailTile('Saat', '14:30'),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Kapat'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailTile(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 76,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppointmentDetailRow(String label, String value) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 72,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
-// ─── VERİ MODELLERİ ──────────────────────────────────
 class _MedItem {
   final String name, dosage, time;
   final IconData icon;
   final Color color;
-  final bool isTaken;
+  bool isTaken;
+
   _MedItem(
     this.name,
     this.dosage,
@@ -1012,29 +879,4 @@ class _MedItem {
   );
 }
 
-class _ExItem {
-  final String title, sets, duration;
-  final IconData icon;
-  final Color color;
-  final bool isDone;
-  _ExItem(
-    this.title,
-    this.sets,
-    this.duration,
-    this.icon,
-    this.color,
-    this.isDone,
-  );
-}
-
-class _AppointmentData {
-  final String doctor, specialty, date, time;
-  final bool isUpcoming;
-  _AppointmentData({
-    required this.doctor,
-    required this.specialty,
-    required this.date,
-    required this.time,
-    required this.isUpcoming,
-  });
-}
+enum _ProfileMenuAction { profile, settings }

@@ -13,7 +13,7 @@ class ExercisesScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () => _showExerciseSearch(context),
           ),
         ],
       ),
@@ -77,7 +77,9 @@ class ExercisesScreen extends StatelessWidget {
                 height: 70,
                 child: CircularProgressIndicator(
                   value: 0.6,
-                  backgroundColor: AppColors.primaryLight.withValues(alpha: 0.2),
+                  backgroundColor: AppColors.primaryLight.withValues(
+                    alpha: 0.2,
+                  ),
                   color: AppColors.primary,
                   strokeWidth: 8,
                   strokeCap: StrokeCap.round,
@@ -139,7 +141,6 @@ class ExercisesScreen extends StatelessWidget {
           subtitle: '3 set x 15 tekrar • 10 dk',
           icon: Icons.rotate_right,
           color: AppColors.chartBlue,
-          isCompleted: true,
         ),
         SizedBox(height: 12),
         _ExerciseCard(
@@ -147,7 +148,6 @@ class ExercisesScreen extends StatelessWidget {
           subtitle: '3 set x 12 tekrar • 8 dk',
           icon: Icons.height,
           color: AppColors.chartOrange,
-          isCompleted: false,
         ),
       ],
     );
@@ -189,7 +189,6 @@ class ExercisesScreen extends StatelessWidget {
           subtitle: '2 set x 30 sn • 10 dk',
           icon: Icons.balance,
           color: AppColors.chartGreen,
-          isCompleted: false,
         ),
         SizedBox(height: 12),
         _ExerciseCard(
@@ -197,7 +196,6 @@ class ExercisesScreen extends StatelessWidget {
           subtitle: '2 set x 20 adım • 5 dk',
           icon: Icons.directions_walk,
           color: AppColors.primaryLight,
-          isCompleted: false,
         ),
         SizedBox(height: 12),
         _ExerciseCard(
@@ -205,7 +203,6 @@ class ExercisesScreen extends StatelessWidget {
           subtitle: '3 set x 10 tekrar • 8 dk',
           icon: Icons.airline_seat_legroom_extra,
           color: AppColors.chartBlue,
-          isCompleted: false,
         ),
       ],
     );
@@ -252,20 +249,25 @@ class _CategoryCard extends StatelessWidget {
   }
 }
 
-class _ExerciseCard extends StatelessWidget {
+class _ExerciseCard extends StatefulWidget {
   final String title;
   final String subtitle;
   final IconData icon;
   final Color color;
-  final bool isCompleted;
 
   const _ExerciseCard({
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.color,
-    required this.isCompleted,
   });
+
+  @override
+  State<_ExerciseCard> createState() => _ExerciseCardState();
+}
+
+class _ExerciseCardState extends State<_ExerciseCard> {
+  bool isCompleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -288,10 +290,10 @@ class _ExerciseCard extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
+              color: widget.color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(widget.icon, color: widget.color, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -299,7 +301,7 @@ class _ExerciseCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  widget.title,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -309,7 +311,7 @@ class _ExerciseCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  subtitle,
+                  widget.subtitle,
                   style: const TextStyle(
                     fontSize: 13,
                     color: AppColors.textSecondary,
@@ -318,23 +320,94 @@ class _ExerciseCard extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: isCompleted
-                  ? AppColors.success.withValues(alpha: 0.12)
-                  : AppColors.background,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isCompleted ? Icons.check_circle : Icons.play_arrow_rounded,
-              color: isCompleted ? AppColors.success : AppColors.primary,
-              size: 22,
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isCompleted = !isCompleted;
+              });
+            },
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color:
+                    isCompleted
+                        ? AppColors.success.withValues(alpha: 0.12)
+                        : AppColors.background,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                isCompleted ? Icons.check_circle : Icons.play_arrow_rounded,
+                color: isCompleted ? AppColors.success : AppColors.primary,
+                size: 22,
+              ),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+void _showExerciseSearch(BuildContext context) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Egzersiz Ara',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Egzersiz adı gir',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: AppColors.background,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Öneriler',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  Chip(label: Text('Denge Egzersizi')),
+                  Chip(label: Text('Ayak Bileği Rotasyonu')),
+                  Chip(label: Text('Topuk Kaldırma')),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
