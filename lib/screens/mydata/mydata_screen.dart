@@ -48,7 +48,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF3B82F6), Color(0xFF0EA5A4)],
+          colors: [AppColors.chartBlue, AppColors.primary],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -170,8 +170,8 @@ class _MyDataScreenState extends State<MyDataScreen> {
                 title: 'Sağ Pronasyon',
                 value: '-8.2°',
                 subtitle: '↓ Dikkat',
-                valueColor: Color(0xFFEF4444),
-                accentColor: Color(0xFFF59E0B),
+                valueColor: AppColors.error,
+                accentColor: AppColors.warning,
               ),
               _MetricCard(
                 title: 'Sol Pronasyon',
@@ -684,26 +684,26 @@ class _PronationTrendPainter extends CustomPainter {
 
     final tealPaint =
         Paint()
-          ..color = const Color(0xFF09C6C7)
+          ..color = AppColors.primaryLight
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3
           ..strokeCap = StrokeCap.round;
 
     final bluePaint =
         Paint()
-          ..color = const Color(0xFF3B82F6)
+          ..color = AppColors.chartBlue
           ..style = PaintingStyle.stroke
           ..strokeWidth = 3
           ..strokeCap = StrokeCap.round;
 
     final tealFill =
         Paint()
-          ..color = const Color(0xFF09C6C7)
+          ..color = AppColors.primaryLight
           ..style = PaintingStyle.fill;
 
     final blueFill =
         Paint()
-          ..color = const Color(0xFF3B82F6)
+          ..color = AppColors.chartBlue
           ..style = PaintingStyle.fill;
 
     const left = 38.0;

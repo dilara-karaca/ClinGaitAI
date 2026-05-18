@@ -28,6 +28,8 @@ class _HomeBodyState extends State<HomeBody> {
       Icons.wb_sunny,
       AppColors.chartOrange,
       true,
+      'Kemik sağlığını güçlendirir ve bağışıklık sistemini destekler.',
+      'Günde 1 kere (Sabah tok karnına)',
     ),
     _MedItem(
       'Kalsiyum',
@@ -36,6 +38,8 @@ class _HomeBodyState extends State<HomeBody> {
       Icons.medication_outlined,
       AppColors.chartBlue,
       false,
+      'Kemik yoğunluğunu artırır, kas fonksiyonlarına yardımcı olur.',
+      'Günde 1 kere (Öğle)',
     ),
     _MedItem(
       'Omega-3',
@@ -44,6 +48,18 @@ class _HomeBodyState extends State<HomeBody> {
       Icons.water_drop_outlined,
       AppColors.chartGreen,
       false,
+      'Kalp ve beyin sağlığını korur, iltihaplanmayı azaltır.',
+      'Günde 1 kere (Akşam tok karnına)',
+    ),
+    _MedItem(
+      'Magnezyum',
+      '250 mg',
+      'Gece',
+      Icons.nightlight_round,
+      AppColors.chartPurple,
+      false,
+      'Kas kramplarını önler ve daha kaliteli bir uyku sağlar.',
+      'Günde 1 kere (Gece yatmadan önce)',
     ),
   ];
 
@@ -334,14 +350,14 @@ class _HomeBodyState extends State<HomeBody> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryLight],
+          colors: [Color(0xFF38BDF8), Color(0xFF0EA5E9)], // Canlı ve açık mavi
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: const Color(0xFF38BDF8).withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -360,7 +376,7 @@ class _HomeBodyState extends State<HomeBody> {
                 ),
                 child: const Icon(
                   Icons.local_fire_department_rounded,
-                  color: AppColors.accent,
+                  color: Color(0xFF4ADE80), // Açık ve canlı yeşil
                   size: 28,
                 ),
               ),
@@ -414,7 +430,7 @@ class _HomeBodyState extends State<HomeBody> {
                     decoration: BoxDecoration(
                       color:
                           isCompleted
-                              ? AppColors.accent
+                              ? const Color(0xFF4ADE80) // Açık ve canlı yeşil
                               : isToday
                               ? Colors.white.withOpacity(0.3)
                               : Colors.white.withOpacity(0.1),
@@ -614,10 +630,33 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            medication.description,
+                            style: const TextStyle(fontSize: 13, color: AppColors.textPrimary, height: 1.4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   _buildDetailTile(
                     'Durum',
                     medication.isTaken ? 'Alındı' : 'Bekliyor',
                   ),
+                  const SizedBox(height: 10),
+                  _buildDetailTile('Kullanım', medication.frequency),
                   const SizedBox(height: 10),
                   _buildDetailTile('Saat', medication.time),
                   const SizedBox(height: 10),
@@ -864,7 +903,7 @@ class _HomeBodyState extends State<HomeBody> {
 }
 
 class _MedItem {
-  final String name, dosage, time;
+  final String name, dosage, time, description, frequency;
   final IconData icon;
   final Color color;
   bool isTaken;
@@ -876,6 +915,8 @@ class _MedItem {
     this.icon,
     this.color,
     this.isTaken,
+    this.description,
+    this.frequency,
   );
 }
 
