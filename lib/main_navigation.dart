@@ -28,10 +28,10 @@ class _MainNavigationState extends State<MainNavigation> {
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: Colors.black.withValues(alpha: 0.15),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -91,7 +91,7 @@ class _MainNavigationState extends State<MainNavigation> {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? AppColors.primary.withValues(alpha: 0.1)
+                  ? AppColors.mintGreen.withValues(alpha: 0.12)
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
@@ -100,7 +100,7 @@ class _MainNavigationState extends State<MainNavigation> {
           children: [
             Icon(
               isSelected ? activeIcon : inactiveIcon,
-              color: isSelected ? AppColors.primary : AppColors.textLight,
+              color: isSelected ? AppColors.mintGreen : AppColors.textLight.withValues(alpha: 0.6),
               size: 24,
             ),
             const SizedBox(height: 4),
@@ -109,7 +109,7 @@ class _MainNavigationState extends State<MainNavigation> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                color: isSelected ? AppColors.primary : AppColors.textLight,
+                color: isSelected ? AppColors.mintGreen : AppColors.textLight.withValues(alpha: 0.6),
               ),
             ),
           ],

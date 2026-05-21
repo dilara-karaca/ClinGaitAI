@@ -204,7 +204,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                                 ? AppColors.success
                                 : (isToday
                                     ? AppColors.primary
-                                    : AppColors.background),
+                                    : AppColors.sageGreenLight),
                         shape: BoxShape.circle,
                         border:
                             isToday
@@ -288,7 +288,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
             child: const LinearProgressIndicator(
               value: 0.6,
               minHeight: 12,
-              backgroundColor: AppColors.background,
+              backgroundColor: AppColors.sageGreenLight,
               color: AppColors.primary,
             ),
           ),
@@ -378,10 +378,14 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                     hintText: 'Egzersiz adı gir',
                     prefixIcon: const Icon(Icons.search),
                     filled: true,
-                    fillColor: AppColors.background,
-                    border: OutlineInputBorder(
+                    fillColor: AppColors.surface,
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                      borderSide: const BorderSide(color: AppColors.sageGreenLight),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.mintGreen, width: 2),
                     ),
                   ),
                 ),
@@ -523,7 +527,7 @@ class _ExpandableExerciseCardState extends State<_ExpandableExerciseCard> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.background,
+                      color: AppColors.sageGreenLight,
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Stack(
@@ -575,7 +579,7 @@ class _ExpandableExerciseCardState extends State<_ExpandableExerciseCard> {
                         color:
                             isCompleted
                                 ? AppColors.success.withValues(alpha: 0.12)
-                                : AppColors.background,
+                                : AppColors.sageGreenLight,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -601,7 +605,7 @@ class _ExpandableExerciseCardState extends State<_ExpandableExerciseCard> {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: AppColors.sageGreenLight,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(

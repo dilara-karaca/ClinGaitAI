@@ -200,7 +200,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.sageGreenLight,
         borderRadius: BorderRadius.circular(999),
         boxShadow: [
           BoxShadow(
@@ -220,7 +220,7 @@ class _MyDataScreenState extends State<MyDataScreen> {
                 duration: const Duration(milliseconds: 180),
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.background : Colors.transparent,
+                  color: isSelected ? AppColors.surface : Colors.transparent,
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
@@ -451,7 +451,7 @@ class _MetricCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.background),
+        border: Border.all(color: AppColors.sageGreenLight),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

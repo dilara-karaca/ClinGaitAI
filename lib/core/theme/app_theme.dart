@@ -1,34 +1,46 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Ana renkler - Sağlık / medikal teması
-  static const Color primary = Color(0xFF1D4ED8); // Koyu ve canlı mavi (Royal Blue)
+  // Canlı Koyu Mavi & Lacivert (Ana Taşıyıcı Renkler)
+  static const Color primary = Color(0xFF1E3A8A); // Canlı koyu mavi / lacivert
   static const Color primaryLight = Color(0xFF3B82F6); // Açık canlı mavi
-  static const Color primaryDark = Color(0xFF1E3A8A); // Daha koyu gece mavisi
-  static const Color secondary = Color(0xFF60A5FA); // Destekleyici açık mavi
-  static const Color accent = Color(0xFFE11D48); // Canlı Yakut (Turuncu yerine)
+  static const Color primaryDark = Color(0xFF0F172A); // Koyu lacivert (Üst bar, alt menü)
+  
+  // Koyu Turkuaz
+  static const Color secondary = Color(0xFF0891B2); // Koyu turkuaz
+  static const Color accent = Color(0xFF0E7490); // Yardımcı koyu turkuaz
 
-  // Arka plan renkleri
-  static const Color background = Color(0xFFF5F9FA); // Açık gri-mavi
+  // Arka plan ve kart renkleri (Beyaz tema)
+  static const Color background = Color(0xFFFFFFFF); // Saf beyaz arka plan
   static const Color surface = Color(0xFFFFFFFF); // Beyaz
   static const Color cardBackground = Color(0xFFFFFFFF);
 
   // Metin renkleri
-  static const Color textPrimary = Color(0xFF111827); // Koyu gri/siyah daha canlı
-  static const Color textSecondary = Color(0xFF4B5563); // Gri daha koyu
-  static const Color textLight = Color(0xFF9CA3AF); // Açık gri
+  static const Color textPrimary = Color(0xFF0F172A); // Koyu lacivert/siyah
+  static const Color textSecondary = Color(0xFF475569); // Gri daha koyu
+  static const Color textLight = Color(0xFF94A3B8); // Açık gri
+
+  // Yeşil Tonları ve Gradyan
+  static const Color success = Color(0xFF10B981); // Zümrüt / Başarı yeşili
+  static const Color mintGreen = Color(0xFF2DD4BF); // Canlı Mint yeşili
+  static const Color sageGreen = Color(0xFF8BA896); // Adaçayı Yeşili
+  static const Color sageGreenLight = Color(0xFFE8EFEA); // Hafif adaçayı yeşili (pasif kart ve sınır hatları)
+  
+  static const List<Color> greenGradient = [
+    Color(0xFF065F46), // Koyu yeşil
+    Color(0xFF2DD4BF), // Nane yeşili (Mint)
+  ];
 
   // Durum renkleri
-  static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFFA726);
   static const Color error = Color(0xFFEF5350);
-  static const Color info = Color(0xFF42A5F5);
+  static const Color info = Color(0xFF0891B2); // Koyu turkuaz
 
-  // Grafik renkleri
-  static const Color chartBlue = Color(0xFF6366F1); // İndigo Mavi (Canlı)
-  static const Color chartGreen = Color(0xFF10B981); // Zümrüt Yeşili
-  static const Color chartOrange = Color(0xFFF43F5E); // Rose/Pembe (Turuncu yerine)
-  static const Color chartPurple = Color(0xFF8B5CF6); // Canlı Mor
+  // Grafik renkleri (Geriye dönük uyumluluk için)
+  static const Color chartBlue = Color(0xFF0891B2);
+  static const Color chartGreen = Color(0xFF2DD4BF);
+  static const Color chartOrange = Color(0xFF8BA896);
+  static const Color chartPurple = Color(0xFF1E3A8A);
 }
 
 class AppTheme {
@@ -59,11 +71,14 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.sageGreenLight, width: 1),
+        ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primary,
+        backgroundColor: AppColors.primaryDark,
+        selectedItemColor: AppColors.mintGreen,
         unselectedItemColor: AppColors.textLight,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
@@ -107,15 +122,15 @@ class AppTheme {
         fillColor: AppColors.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE0E6EA)),
+          borderSide: const BorderSide(color: AppColors.sageGreenLight),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE0E6EA)),
+          borderSide: const BorderSide(color: AppColors.sageGreenLight),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: const BorderSide(color: AppColors.mintGreen, width: 2),
         ),
         labelStyle: const TextStyle(fontWeight: FontWeight.w500, color: AppColors.textSecondary),
         hintStyle: const TextStyle(color: AppColors.textLight),

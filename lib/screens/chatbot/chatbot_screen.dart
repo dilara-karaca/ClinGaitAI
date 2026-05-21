@@ -275,8 +275,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.sageGreenLight, width: 1),
               ),
               child: TextField(
                 controller: _messageController,

@@ -26,7 +26,7 @@ class _HomeBodyState extends State<HomeBody> {
       '1000 IU',
       'Sabah',
       Icons.wb_sunny,
-      AppColors.chartOrange,
+      AppColors.secondary,
       true,
       'Kemik sağlığını güçlendirir ve bağışıklık sistemini destekler.',
       'Günde 1 kere (Sabah tok karnına)',
@@ -36,7 +36,7 @@ class _HomeBodyState extends State<HomeBody> {
       '500 mg',
       'Öğle',
       Icons.medication_outlined,
-      AppColors.chartBlue,
+      AppColors.primary,
       false,
       'Kemik yoğunluğunu artırır, kas fonksiyonlarına yardımcı olur.',
       'Günde 1 kere (Öğle)',
@@ -46,7 +46,7 @@ class _HomeBodyState extends State<HomeBody> {
       '1000 mg',
       'Akşam',
       Icons.water_drop_outlined,
-      AppColors.chartGreen,
+      AppColors.mintGreen,
       false,
       'Kalp ve beyin sağlığını korur, iltihaplanmayı azaltır.',
       'Günde 1 kere (Akşam tok karnına)',
@@ -56,7 +56,7 @@ class _HomeBodyState extends State<HomeBody> {
       '250 mg',
       'Gece',
       Icons.nightlight_round,
-      AppColors.chartPurple,
+      AppColors.sageGreen,
       false,
       'Kas kramplarını önler ve daha kaliteli bir uyku sağlar.',
       'Günde 1 kere (Gece yatmadan önce)',
@@ -277,7 +277,7 @@ class _HomeBodyState extends State<HomeBody> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: AppColors.sageGreenLight,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -350,14 +350,14 @@ class _HomeBodyState extends State<HomeBody> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF38BDF8), Color(0xFF0EA5E9)], // Canlı ve açık mavi
+          colors: [AppColors.primary, AppColors.primaryDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF38BDF8).withOpacity(0.3),
+            color: AppColors.primary.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -371,12 +371,12 @@ class _HomeBodyState extends State<HomeBody> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(
                   Icons.local_fire_department_rounded,
-                  color: Color(0xFF4ADE80), // Açık ve canlı yeşil
+                  color: AppColors.mintGreen,
                   size: 28,
                 ),
               ),
@@ -428,12 +428,18 @@ class _HomeBodyState extends State<HomeBody> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color:
-                          isCompleted
-                              ? const Color(0xFF4ADE80) // Açık ve canlı yeşil
-                              : isToday
-                              ? Colors.white.withOpacity(0.3)
-                              : Colors.white.withOpacity(0.1),
+                      gradient: isCompleted
+                          ? const LinearGradient(
+                              colors: AppColors.greenGradient,
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )
+                          : null,
+                      color: isCompleted
+                          ? null
+                          : isToday
+                          ? const Color(0xFF00E5FF)
+                          : AppColors.sageGreen.withOpacity(0.2),
                       shape: BoxShape.circle,
                       border:
                           isToday
@@ -495,8 +501,18 @@ class _HomeBodyState extends State<HomeBody> {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: medication.isTaken ? null : AppColors.surface,
+        gradient: medication.isTaken
+            ? const LinearGradient(
+                colors: AppColors.greenGradient,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
         borderRadius: BorderRadius.circular(14),
+        border: medication.isTaken
+            ? null
+            : Border.all(color: AppColors.sageGreenLight, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -516,10 +532,16 @@ class _HomeBodyState extends State<HomeBody> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: medication.color.withOpacity(0.12),
+                  color: medication.isTaken
+                      ? Colors.white.withOpacity(0.2)
+                      : medication.color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(medication.icon, color: medication.color, size: 22),
+                child: Icon(
+                  medication.icon,
+                  color: medication.isTaken ? Colors.white : medication.color,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -528,18 +550,20 @@ class _HomeBodyState extends State<HomeBody> {
                   children: [
                     Text(
                       medication.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        color: medication.isTaken ? Colors.white : AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 3),
                     Text(
                       '${medication.dosage} • ${medication.time}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: medication.isTaken
+                            ? Colors.white.withOpacity(0.8)
+                            : AppColors.textSecondary,
                       ),
                     ),
                   ],
@@ -551,20 +575,16 @@ class _HomeBodyState extends State<HomeBody> {
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color:
-                        medication.isTaken
-                            ? AppColors.success.withOpacity(0.12)
-                            : AppColors.background,
+                    color: medication.isTaken
+                        ? Colors.white.withOpacity(0.2)
+                        : AppColors.sageGreenLight,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     medication.isTaken
                         ? Icons.check_circle
                         : Icons.arrow_forward_ios,
-                    color:
-                        medication.isTaken
-                            ? AppColors.success
-                            : AppColors.textLight,
+                    color: medication.isTaken ? Colors.white : AppColors.textLight,
                     size: medication.isTaken ? 20 : 14,
                   ),
                 ),
@@ -841,7 +861,7 @@ class _HomeBodyState extends State<HomeBody> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: AppColors.sageGreenLight,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
