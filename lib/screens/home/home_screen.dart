@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../profile/profile_screen.dart';
 import '../settings/settings_screen.dart';
-
+import '../../app_strings.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -90,26 +90,26 @@ class _HomeBodyState extends State<HomeBody> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Merhaba Dilara',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Günün nasıl geçiyor?',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: const [
+    Text(
+      'Merhaba Dilara',
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textPrimary,
+      ),
+    ),
+    SizedBox(height: 4),
+    Text(
+      'Günün nasıl geçiyor?',
+      style: TextStyle(
+        fontSize: 13,
+        color: AppColors.textSecondary,
+      ),
+    ),
+  ],
+), // Column
               Row(
                 children: [
                   _buildConnectionIndicator(),
@@ -164,12 +164,12 @@ class _HomeBodyState extends State<HomeBody> {
           _buildStreakCard(),
           const SizedBox(height: 16),
 
-          _buildSectionTitle('İlaçlar', Icons.medication_outlined),
+        _buildSectionTitle(AppStrings.get('meds'), Icons.medication_outlined),
           const SizedBox(height: 12),
           _buildMedicationsForDay(),
           const SizedBox(height: 16),
 
-          _buildSectionTitle('Randevular', Icons.calendar_today),
+          _buildSectionTitle(AppStrings.get('appointments'), Icons.calendar_today),
           const SizedBox(height: 12),
           _buildAppointments(),
           const SizedBox(height: 24),
@@ -382,28 +382,28 @@ class _HomeBodyState extends State<HomeBody> {
               ),
               const SizedBox(width: 16),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '12 Günlük Seri',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Mükemmel gidiyorsun! 🔥',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [ // const kelimesi yok
+    Text(
+      AppStrings.get('streak_title'), // Eski '12 Günlük Seri' yerine
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.5,
+      ),
+    ),
+    const SizedBox(height: 4),
+    Text(
+      AppStrings.get('streak_sub'), // Eski 'Mükemmel gidiyorsun! 🔥' yerine
+      style: TextStyle(
+        color: Colors.white.withOpacity(0.8),
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  ],
+), // Column
             ],
           ),
           const SizedBox(height: 20),
