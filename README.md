@@ -1,4 +1,4 @@
-# clin_gait_ai
+# OmniGait
 
 A new Flutter project.
 
