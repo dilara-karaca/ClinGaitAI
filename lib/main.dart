@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'main_navigation.dart';
+import 'screens/auth/login_screen.dart';
 
 void main() {
   runApp(const ClinGaitApp());
@@ -15,7 +15,7 @@ class ClinGaitApp extends StatelessWidget {
       title: 'ClinGait AI',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const MainNavigation(),
+      home: const LoginScreen(),
     );
   }
 }
